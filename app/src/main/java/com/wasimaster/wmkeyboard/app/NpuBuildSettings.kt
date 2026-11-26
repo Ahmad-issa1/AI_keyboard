@@ -4,8 +4,6 @@ import android.text.format.Formatter
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Memory
-import androidx.compose.material.icons.outlined.Speed
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -45,105 +43,6 @@ internal fun NpuBuildChoice(
     settings: LiveSettings,
     onStart: () -> Unit,
 ) {
-    val context = LocalContext.current
-    val states by NpuModelDownloads.states.collectAsState()
-    // A build deleted with its model (Whisper's Delete) leaves a stale Downloaded behind.
-    val status = states[target.path]?.takeUnless { it is NpuModelDownloads.Status.Downloaded && !target.isFile }
-        ?: if (target.isFile) NpuModelDownloads.Status.Downloaded else NpuModelDownloads.Status.NotDownloaded
-    val decide = rememberDownloadDecision(settings)
-    var metered by remember { mutableStateOf(false) }
-    var blocked by remember { mutableStateOf(false) }
-    var askQualcomm by remember { mutableStateOf(false) }
-    fun size(bytes: Long) = Formatter.formatShortFileSize(context, bytes)
-
-    fun requestRuntime() {
-        // On Play the runtime is a module of its own; on a build that
-        // downloads libraries it is this chip's gates. Both start now rather
-        // than at the first use.
-        if (NativeDelivery.gate(NpuSupport.GATE) != null) {
-            NpuSupport.deliveryGates(build.soc).forEach { NativeDelivery.gate(it)?.requestInstall() }
-        } else {
-            FeatureModules.npu.requestInstall()
-        }
-    }
-
-    fun download() {
-        when (decide()) {
-            MeteredDecision.ALLOWED -> {
-                requestRuntime()
-                onStart()
-            }
-            MeteredDecision.ASK -> metered = true
-            MeteredDecision.BLOCKED -> blocked = true
-        }
-    }
-
-    val npu = status is NpuModelDownloads.Status.Downloading || status is NpuModelDownloads.Status.Downloaded
-    val runtimeFailure = remember(status) { if (npu) NpuRuntime.failure(context, build.soc) else null }
-    val subtitle = when {
-        !npu -> stringResource(R.string.npu_build_subtitle_cpu)
-        failed -> stringResource(R.string.npu_build_subtitle_failed)
-        else -> stringResource(R.string.npu_build_subtitle_npu, build.soc)
-    }
-    Column {
-        ChoiceSetting(
-            title = title,
-            subtitle = subtitle,
-            info = info,
-            options = listOf(
-                false to stringResource(R.string.npu_build_cpu),
-                true to stringResource(R.string.npu_build_npu, size(build.keptBytes)),
-            ),
-            selected = npu,
-            default = false,
-            detail = { choice -> ChoiceDetail(icon = if (choice) Icons.Outlined.Speed else Icons.Outlined.Memory) },
-        ) { pickNpu ->
-            if (!pickNpu) {
-                NpuModelDownloads.delete(target)
-                return@ChoiceSetting
-            }
-            // A build that downloads libraries fetches a Snapdragon's runtime
-            // from Qualcomm's own repository, under Qualcomm's licence: the
-            // same question Compute = NPU asks for on-device AI.
-            if (NativeDelivery.gate(NpuSupport.GATE) != null && NpuSupport.qnnSoc != null &&
-                !NativeConsent.has(NativeConsent.QUALCOMM)
-            ) {
-                askQualcomm = true
-                return@ChoiceSetting
-            }
-            download()
-        }
-        when {
-            status is NpuModelDownloads.Status.Downloading -> StateBanner(
-                stringResource(R.string.npu_build_downloading, size(status.bytes), size(status.total)),
-                action = stringResource(CommonR.string.common_cancel),
-                onAction = { NpuModelDownloads.delete(target) },
-            )
-            status is NpuModelDownloads.Status.Failed -> StateBanner(
-                stringResource(status.messageRes),
-                action = stringResource(CommonR.string.common_retry),
-                tone = BannerTone.WARNING,
-                onAction = { download() },
-            )
-            runtimeFailure != null -> StateBanner(runtimeFailure, tone = BannerTone.WARNING)
-        }
-    }
-    if (askQualcomm) {
-        QualcommLicenceDialog { accepted ->
-            askQualcomm = false
-            if (accepted) download()
-        }
-    }
-    if (metered) {
-        MeteredDownloadDialog(
-            detail = stringResource(R.string.npu_build_metered_body, size(build.bytes)),
-            onConfirm = {
-                metered = false
-                requestRuntime()
-                onStart()
-            },
-            onDismiss = { metered = false },
-        )
-    }
-    if (blocked) MeteredBlockedDialog(onDismiss = { blocked = false })
+    // Disabled in custom slim build
 }
+
