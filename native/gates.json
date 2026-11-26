@@ -105,28 +105,6 @@
           ]
         },
         {
-          "name": "libwmwhispercpp_opencl.so",
-          "dir": "core/voice/src/main/jniLibs",
-          "fdroidBuild": "native/whispercpp-jni/build.sh",
-          "abis": [
-            "arm64-v8a"
-          ]
-        },
-        {
-          "name": "libwmwhistle.so",
-          "dir": "core/voice/src/whistle/jniLibs",
-          "abis": [
-            "arm64-v8a"
-          ],
-          "fdroidPin": {
-            "gate": "whistle",
-            "arm64-v8a": {
-              "sha256": "60a5166cb70fc2253cc839a44edac1dbce493ef1d84b6c52076cbebd9c8a9f7a",
-              "size": 622240
-            }
-          }
-        },
-        {
           "name": "libwmdenoise.so",
           "dir": "core/voice/src/main/jniLibs",
           "fdroidBuild": "native/rnnoise-jni/build.sh"
@@ -138,134 +116,57 @@
       "property": "whisperVulkan",
       "doc": "`:feature:whispervulkan`: whisper.cpp's Vulkan build for the phone GPUs Qualcomm's OpenCL backend refuses (Mali, Xclipse, PowerVR; `:core:voice`), loaded by `WhisperCppGpu` beside a CPU build when Compute on the Offline Whisper screen asks for the GPU on such a phone. Its own gate because its compiled shaders make it many times the size of the CPU builds.",
       "play": "split",
-      "libraries": [
-        {
-          "name": "libwmwhispercpp_vulkan.so",
-          "dir": "core/voice/src/whispervulkan/jniLibs",
-          "fdroidBuild": "native/whispercpp-jni/build.sh",
-          "abis": [
-            "arm64-v8a"
-          ]
-        }
-      ]
+      "libraries": []
     },
     {
       "id": "opus",
       "property": "opus",
       "doc": "`:feature:opus`: libopus and the Ogg writer that compress dictation audio before it is uploaded to a transcription server (`OpusEncoder`, `:core:voice`). Its own gate, not the speech one: server dictation is the only user, and it should not have to fetch the on-device engines' libraries to get 300 KB of encoder. Until it is here the clip goes as WAV.",
       "play": "split",
-      "libraries": [
-        {
-          "name": "libwmopus.so",
-          "dir": "core/voice/src/opus/jniLibs",
-          "fdroidBuild": "native/opus-jni/build.sh",
-          "keep": [
-            "com.wasimaster.wmkeyboard.core.voice.OpusEncoder"
-          ]
-        }
-      ]
+      "libraries": []
     },
     {
       "id": "executorch",
       "property": "executorch",
       "doc": "`:feature:executorch`: the app's ExecuTorch runtime (`libwmexecutorch`), shared by Asr4All, Parakeet and Moonshine dictation and the FUTO Swipe glide engine (`:core:voice`). Its own gate so that turning on the glide engine does not also fetch whisper.cpp and Whistle.",
       "play": "split",
-      "libraries": [
-        {
-          "name": "libwmexecutorch.so",
-          "dir": "core/voice/src/executorch/jniLibs",
-          "fdroidBuild": "native/executorch-jni/build.sh"
-        }
-      ]
+      "libraries": []
     },
     {
       "id": "executorchqnn",
       "property": "executorchQnn",
       "doc": "`:feature:executorchqnn`: ExecuTorch with Qualcomm's QNN delegate beside XNNPACK (`libwmexecutorch_qnn`, arm64, `:core:voice`), loaded instead of `libwmexecutorch` on a Snapdragon with an NPU once fetched, so a program exported for that NPU runs its delegated parts there through the `npu` gate's QNN libraries. Compiled against Qualcomm's QNN headers, so never F-Droid's.",
       "play": "split",
-      "libraries": [
-        {
-          "name": "libwmexecutorch_qnn.so",
-          "dir": "core/voice/src/executorchqnn/jniLibs",
-          "abis": [
-            "arm64-v8a"
-          ]
-        }
-      ]
+      "libraries": []
     },
     {
       "id": "executorchvulkan",
       "property": "executorchVulkan",
       "doc": "`:feature:executorchvulkan`: ExecuTorch with its Vulkan GPU delegate beside XNNPACK (`libwmexecutorch_vulkan`, arm64, `:core:voice`), loaded instead of `libwmexecutorch` on a phone with Vulkan 1.1 once fetched, so a program exported with the Vulkan partitioner runs its delegated parts on the GPU. Its shaders are compiled in with native/vulkan.sh's glslc.",
       "play": "split",
-      "libraries": [
-        {
-          "name": "libwmexecutorch_vulkan.so",
-          "dir": "core/voice/src/executorchvulkan/jniLibs",
-          "fdroidBuild": "native/executorch-jni/build.sh",
-          "abis": [
-            "arm64-v8a"
-          ]
-        }
-      ]
+      "libraries": []
     },
     {
       "id": "executorchneuron",
       "property": "executorchNeuron",
       "doc": "`:feature:executorchneuron`: ExecuTorch with MediaTek's NeuroPilot delegate beside XNNPACK (`libwmexecutorch_neuron`, arm64, `:core:voice`), loaded instead of `libwmexecutorch` on a Dimensity 9300 or 9400 once fetched, so a program exported for that NPU runs its delegated parts there through the phone's own NeuroPilot adapter. Compiled against MediaTek's NeuronAdapter.h, so never F-Droid's.",
       "play": "split",
-      "libraries": [
-        {
-          "name": "libwmexecutorch_neuron.so",
-          "dir": "core/voice/src/executorchneuron/jniLibs",
-          "abis": [
-            "arm64-v8a"
-          ]
-        }
-      ]
+      "libraries": []
     },
     {
       "id": "onnx",
       "property": "onnx",
       "doc": "`:feature:onnx`: Microsoft's ONNX Runtime and the sherpa-onnx bridge built on it (`libwmsherpa`), behind the Sherpa voice engine (`:core:voice`). Outside Play the runtime is read straight out of Microsoft's AAR on Maven Central, never mirrored. Other ONNX models can ride the same runtime later; only sherpa-onnx's bridge is specific.",
       "play": "split",
-      "libraries": [
-        {
-          "name": "libwmsherpa.so",
-          "dir": "core/voice/src/onnx/jniLibs",
-          "fdroidBuild": "native/sherpa-onnx-jni/build.sh"
-        },
-        {
-          "name": "libwmnikud.so",
-          "dir": "core/voice/src/onnx/jniLibs",
-          "fdroidBuild": "native/nikud-jni/build.sh"
-        }
-      ],
-      "maven": [
-        {
-          "name": "libonnxruntime.so",
-          "module": "com.microsoft.onnxruntime:onnxruntime-android",
-          "catalog": "onnxruntime-android"
-        }
-      ]
+      "libraries": [],
+      "maven": []
     },
     {
       "id": "sherpaqnn",
       "property": "sherpaQnn",
       "doc": "`:feature:sherpaqnn`: sherpa-onnx built a second time with its QNN recognizers (`libwmsherpa_qnn`, arm64, `:core:voice`), which run k2-fsa's ready-made QNN context binaries of Parakeet and Moonshine models on a Snapdragon NPU through the `npu` gate's QNN libraries. Loaded beside the `onnx` gate's ONNX Runtime, which it names as a dependency, once an NPU build of either engine is used. Compiled against Qualcomm's QNN headers, so never F-Droid's.",
       "play": "split",
-      "libraries": [
-        {
-          "name": "libwmsherpa_qnn.so",
-          "dir": "core/voice/src/sherpaqnn/jniLibs",
-          "abis": [
-            "arm64-v8a"
-          ],
-          "keep": [
-            "com.wasimaster.wmkeyboard.core.voice.sherpa.SherpaQnnNative"
-          ]
-        }
-      ]
+      "libraries": []
     },
     {
       "id": "vosk",
@@ -273,22 +174,8 @@
       "doc": "`:feature:vosk`: Alpha Cephei's Vosk (`libvosk`, Kaldi inside, about 10 MB on arm64) and this project's bridge to its C API (`libwmvosk`), behind the Vosk voice engine (`:core:voice`). Outside Play the library is read straight out of Alpha Cephei's AAR on Maven Central, never mirrored. A prebuilt binary, so not in F-Droid's build.",
       "play": "split",
       "google": true,
-      "libraries": [
-        {
-          "name": "libwmvosk.so",
-          "dir": "core/voice/src/vosk/jniLibs",
-          "keep": [
-            "com.wasimaster.wmkeyboard.core.voice.vosk.VoskNative"
-          ]
-        }
-      ],
-      "maven": [
-        {
-          "name": "libvosk.so",
-          "module": "com.alphacephei:vosk-android",
-          "catalog": "vosk-android"
-        }
-      ]
+      "libraries": [],
+      "maven": []
     },
     {
       "id": "kiwi",
@@ -335,16 +222,7 @@
       "property": "divvunGrammar",
       "doc": "`:feature:divvungrammar`: divvun-runtime, which runs GiellaLT's grammar checker bundles (Sámi languages, Faroese) for the grammar tool (`:core:intelligence`). GPL-3.0, unlike the rest of the app: its VISL CG-3 port is. Fetched the first time a grammar bundle is downloaded.",
       "play": "split",
-      "libraries": [
-        {
-          "name": "libwmdivvungrammar.so",
-          "dir": "core/intelligence/src/divvungrammar/jniLibs",
-          "fdroidBuild": "native/divvungrammar-jni/build.sh",
-          "keep": [
-            "com.wasimaster.wmkeyboard.core.grammar.DivvunGrammarNative"
-          ]
-        }
-      ]
+      "libraries": []
     },
     {
       "id": "spell",
@@ -358,22 +236,6 @@
           "fdroidBuild": "native/hunspell-jni/build.sh",
           "keep": [
             "com.wasimaster.wmkeyboard.core.prediction.HunspellNative"
-          ]
-        },
-        {
-          "name": "libwmdivvun.so",
-          "dir": "core/prediction/src/main/jniLibs",
-          "fdroidBuild": "native/divvunspell-jni/build.sh",
-          "keep": [
-            "com.wasimaster.wmkeyboard.core.prediction.DivvunNative"
-          ]
-        },
-        {
-          "name": "libwmvoikko.so",
-          "dir": "native/voikko-jni/jniLibs",
-          "fdroidBuild": "native/voikko-jni/build.sh",
-          "keep": [
-            "com.wasimaster.wmkeyboard.core.prediction.VoikkoNative"
           ]
         }
       ]
@@ -456,16 +318,7 @@
       "property": "ct2",
       "doc": "`:feature:ct2`: CTranslate2, the runtime of the translate tool's NLLB engine (`:core:intelligence`). Only the library moves; the model is a separate 630 MB download.",
       "play": "split",
-      "libraries": [
-        {
-          "name": "libwmct2.so",
-          "dir": "core/intelligence/src/ct2/jniLibs",
-          "fdroidBuild": "native/ctranslate2-jni/build.sh",
-          "keep": [
-            "com.wasimaster.wmkeyboard.core.translate.Ct2Native"
-          ]
-        }
-      ]
+      "libraries": []
     },
     {
       "id": "zinnia",

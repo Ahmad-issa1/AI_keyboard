@@ -40,84 +40,9 @@ import kotlinx.coroutines.withContext
  */
 @Composable
 internal fun EtCustomModelsGroup(engine: EtEngine, settings: LiveSettings) {
-    val context = LocalContext.current
-    val filesDir = context.filesDir
-    val scope = rememberCoroutineScope()
-    var models by remember(engine) { mutableStateOf(EtCustomModels.forEngine(filesDir, engine)) }
-    var picked by remember { mutableStateOf<List<Uri>>(emptyList()) }
-    var busy by remember { mutableStateOf(false) }
-    var problem by remember { mutableStateOf<Int?>(null) }
-    val pick = rememberLauncherForActivityResult(ActivityResultContracts.OpenMultipleDocuments()) { uris ->
-        problem = null
-        picked = uris
-    }
-    val qwen3 = engine == EtEngine.QWEN3
-    SettingsGroup(
-        stringResource(R.string.voice_sherpa_custom_group),
-        info = stringResource(if (qwen3) R.string.voice_qwen3_custom_info else R.string.voice_sherpa_custom_info),
-    ) {
-        for (model in models) {
-            item {
-                WmRow(
-                    title = model.label,
-                    subtitle = model.languages.orEmpty().joinToString(", "),
-                    trailing = {
-                        IconButton(onClick = {
-                            EtCustomModels.delete(filesDir, model)
-                            models = EtCustomModels.forEngine(filesDir, engine)
-                        }) {
-                            Icon(
-                                Icons.Outlined.Delete,
-                                contentDescription = stringResource(R.string.models_delete_model_desc, model.label),
-                            )
-                        }
-                    },
-                )
-            }
-        }
-        item {
-            Column {
-                WmRow(
-                    title = stringResource(R.string.voice_sherpa_custom_add_title),
-                    subtitle = stringResource(
-                        if (qwen3) R.string.voice_qwen3_custom_add_subtitle else R.string.voice_sherpa_custom_add_subtitle,
-                    ),
-                    leading = { Icon(Icons.Outlined.Add, contentDescription = null) },
-                    onClick = { if (!busy) pick.launch(arrayOf("*/*")) },
-                )
-                problem?.let { CaptionText(stringResource(it), error = true) }
-            }
-        }
-        // The row draws nothing on the offline build; no empty card for it either.
-        item(visible = !OfflineBuild.isThisBuild, waitsOnSetting = false) {
-            HuggingFaceImportRow(
-                if (qwen3) HfTarget.QWEN3 else HfTarget.SHERPA,
-                settings,
-                onInstalled = { models = EtCustomModels.forEngine(filesDir, engine) },
-            )
-        }
-    }
-    if (picked.isEmpty()) return
-    ModelImportDialog(
-        settings = settings,
-        title = stringResource(R.string.voice_sherpa_custom_add_title),
-        picked = picked,
-        scope = scope,
-        onDismiss = { picked = emptyList() },
-        onBusy = { busy = it },
-        install = { files, name, languages -> EtCustomModels.install(filesDir, files, name, languages) },
-    ) { outcome ->
-        models = EtCustomModels.forEngine(filesDir, engine)
-        problem = customModelProblem(outcome)
-    }
+    // Disabled in custom slim build
 }
 
-/**
- * Asks what to call the [picked] files and which languages they are for, then
- * copies them to the cache, since a picker hands out addresses rather than paths,
- * and gives them to [install]. [onDone] has null when that failed. [scope] is the
- * caller's: this dialog is gone before the copying ends.
- */
 @Composable
 internal fun <T> ModelImportDialog(
     settings: LiveSettings,
@@ -129,64 +54,6 @@ internal fun <T> ModelImportDialog(
     install: (files: List<File>, name: String, languages: Set<String>) -> T,
     onDone: (T?) -> Unit,
 ) {
-    val context = LocalContext.current
-    var name by remember { mutableStateOf("") }
-    var languages by remember {
-        mutableStateOf(settings.value.enabledLanguages.firstOrNull()?.id.orEmpty().substringBefore('_').substringBefore('-'))
-    }
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text(title) },
-        text = {
-            Column {
-                OutlinedTextField(
-                    value = name,
-                    onValueChange = { name = it },
-                    singleLine = true,
-                    label = { Text(stringResource(R.string.voice_sherpa_custom_name)) },
-                )
-                OutlinedTextField(
-                    value = languages,
-                    onValueChange = { languages = it },
-                    singleLine = true,
-                    label = { Text(stringResource(R.string.voice_sherpa_custom_languages)) },
-                )
-            }
-        },
-        confirmButton = {
-            TextButton(
-                enabled = name.isNotBlank() && languages.isNotBlank(),
-                onClick = {
-                    val uris = picked
-                    val chosenName = name.trim()
-                    val chosenLanguages = languages.split(',').map { it.trim().lowercase() }.filter { it.isNotEmpty() }.toSet()
-                    onDismiss()
-                    onBusy(true)
-                    scope.launch {
-                        val outcome = withContext(Dispatchers.IO) {
-                            val temp = File(context.cacheDir, "model-import").apply { deleteRecursively(); mkdirs() }
-                            runCatching {
-                                val files = uris.mapNotNull { uri ->
-                                    val shown = context.contentResolver.query(uri, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null)
-                                        ?.use { c -> if (c.moveToFirst()) c.getString(0) else null }
-                                        ?: return@mapNotNull null
-                                    val file = File(temp, File(shown).name)
-                                    context.contentResolver.openInputStream(uri)?.use { input ->
-                                        file.outputStream().use { input.copyTo(it) }
-                                    } ?: return@mapNotNull null
-                                    file
-                                }
-                                install(files, chosenName, chosenLanguages)
-                            }.also { temp.deleteRecursively() }.getOrNull()
-                        }
-                        onBusy(false)
-                        onDone(outcome)
-                    }
-                },
-            ) { Text(stringResource(CommonR.string.common_import)) }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) { Text(stringResource(CommonR.string.common_cancel)) }
-        },
-    )
+    // Disabled in custom slim build
 }
+
