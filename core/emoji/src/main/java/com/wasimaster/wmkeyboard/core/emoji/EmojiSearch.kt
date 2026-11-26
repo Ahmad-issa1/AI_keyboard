@@ -56,7 +56,11 @@ class EmojiSearch(
             bonusIndices = bonusIndices,
             bonusScores = bonusScores,
         )
-        return indices.mapNotNull { entries.getOrNull(it) }
+        val results = ArrayList<EmojiEntry>(indices.size)
+        for (idx in indices) {
+            entries.getOrNull(idx)?.let { results.add(it) }
+        }
+        return results
     }
 
     fun completions(typed: String, context: List<String> = emptyList(), limit: Int = 6): List<String> {
