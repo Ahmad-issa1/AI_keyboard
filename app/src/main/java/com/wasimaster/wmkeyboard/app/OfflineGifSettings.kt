@@ -28,57 +28,6 @@ import com.wasimaster.wmkeyboard.core.tools.offlinegif.OfflineGifPacks
  */
 @Composable
 internal fun OfflineGifPacksGroup() {
-    val context = LocalContext.current
-    OfflineGifPacks.attach(context.filesDir)
-    var packs by remember { mutableStateOf(OfflineGifPacks.packs()) }
-    SettingsGroup(
-        stringResource(R.string.offline_gifs_group),
-        info = stringResource(R.string.offline_gifs_info),
-    ) {
-        for (pack in packs) {
-            item(key = pack.id) {
-                WmRow(
-                    title = pack.name,
-                    supporting = {
-                        Text(
-                            pluralStringResource(
-                                R.plurals.offline_gifs_pack_detail,
-                                pack.gifCount,
-                                pack.gifCount,
-                                formatBytes(pack.sizeBytes),
-                            ),
-                        )
-                    },
-                    swipeActions = listOf(
-                        deleteSwipeAction(stringResource(R.string.offline_gifs_delete_desc, pack.name)) {
-                            OfflineGifPacks.delete(pack.id)
-                            packs = OfflineGifPacks.packs()
-                        },
-                    ),
-                    trailing = {
-                        IconButton(
-                            onClick = {
-                                OfflineGifPacks.delete(pack.id)
-                                packs = OfflineGifPacks.packs()
-                            },
-                        ) {
-                            Icon(Icons.Outlined.Delete, stringResource(R.string.offline_gifs_delete_desc, pack.name))
-                        }
-                    },
-                    modifier = Modifier.padding(horizontal = 4.dp),
-                )
-            }
-        }
-        item {
-            OfflineImportRow(
-                title = stringResource(R.string.offline_gifs_import_title),
-                subtitle = stringResource(R.string.offline_gifs_import_subtitle),
-                links = listOf(
-                    OfflineLink(stringResource(R.string.offline_gifs_link_label), OfflineGifPacks.PACKS_PAGE),
-                ),
-                gifPictures = true,
-                onImported = { packs = OfflineGifPacks.packs() },
-            )
-        }
-    }
+    // Disabled in custom slim build
 }
+

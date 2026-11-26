@@ -146,3 +146,6 @@ pub mod wmng;
 pub mod wordlist;
 pub mod zawgyi;
 pub mod zawgyi_rules;
+pub mod clip_entities;
+pub mod emoji_search;
+pub mod emoji_suggester;

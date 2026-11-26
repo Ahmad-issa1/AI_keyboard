@@ -388,7 +388,23 @@ val NetworkOnlyTools: Set<ToolbarTool> = setOf(
 // so for any other language. So is the QR scanner, which reads with
 // zxing-cpp where ML Kit's barcode reader is not, and text scan, which reads
 // with PaddleOCR on MNN where neither ML Kit nor LiteRT is.
+/** Tools permanently disabled in this slim custom build. */
+val RemovedCustomTools: Set<ToolbarTool> = setOf(
+    ToolbarTool.AI,
+    ToolbarTool.AI_REPLY,
+    ToolbarTool.GIF,
+    ToolbarTool.STICKER,
+    ToolbarTool.EMOJI_MIX,
+    ToolbarTool.KDE_CONNECT,
+    ToolbarTool.HOME_ASSISTANT,
+    ToolbarTool.SEND_FILES,
+    ToolbarTool.PLUGINS,
+    ToolbarTool.PHONETIC_ENGLISH,
+    ToolbarTool.HOMOPHONES,
+)
+
 fun isSupportedTool(tool: ToolbarTool): Boolean = when {
+    tool in RemovedCustomTools -> false
     // Nothing but a connection to offer, so not in the offline build (#292).
     OfflineBuild.isThisBuild && tool in NetworkOnlyTools -> false
     !BuildConfig.ENABLE_GRAMMAR && tool == ToolbarTool.GRAMMAR -> false
@@ -434,7 +450,7 @@ val ActionOnlyTools: Set<ToolbarTool> =
  * compares the stored set against this one to tell an untouched default from
  * a user's own choice.
  */
-val EverythingTools: List<ToolbarTool> = ToolbarTool.entries.filterNot { it in OptInOnlyTools || it in ActionOnlyTools }
+val EverythingTools: List<ToolbarTool> = ToolbarTool.entries.filterNot { it in OptInOnlyTools || it in ActionOnlyTools || it in RemovedCustomTools }
 
 /**
  * The onboarding starting selection for the "keep it simple" persona: what a
@@ -447,8 +463,8 @@ val EverythingTools: List<ToolbarTool> = ToolbarTool.entries.filterNot { it in O
  * defaults because top-level initialisation runs in file order.
  */
 val MinimalTools: Set<ToolbarTool> = setOf(
-    ToolbarTool.EMOJI, ToolbarTool.GIF, ToolbarTool.STICKER, ToolbarTool.CLIPBOARD,
-    ToolbarTool.VOICE, ToolbarTool.AI, ToolbarTool.GRAMMAR, ToolbarTool.SETTINGS,
+    ToolbarTool.EMOJI, ToolbarTool.CLIPBOARD,
+    ToolbarTool.VOICE, ToolbarTool.GRAMMAR, ToolbarTool.SETTINGS,
 )
 
 /**
@@ -476,7 +492,7 @@ val PowerTools: Set<ToolbarTool> = RecommendedTools + setOf(
     ToolbarTool.SYMBOLS, ToolbarTool.CALCULATOR, ToolbarTool.UNIT_CONVERT, ToolbarTool.CURRENCY,
     ToolbarTool.PASSWORD_GEN, ToolbarTool.TEXT_REPEAT, ToolbarTool.CALENDAR, ToolbarTool.CLOCK, ToolbarTool.WEATHER,
     ToolbarTool.LOCATION,
-    ToolbarTool.MEDIA_CONTROL, ToolbarTool.KDE_CONNECT, ToolbarTool.HOME_ASSISTANT, ToolbarTool.SEND_FILES,
+    ToolbarTool.MEDIA_CONTROL,
     ToolbarTool.APP_LAUNCHER, ToolbarTool.HIDE_KEYBOARD,
 )
 
@@ -575,13 +591,13 @@ val DefaultToolbarTools: List<ToolbarTool> =
  * persona on a large tablet pins five of seven.
  */
 val SmallTabletToolbarTools: List<ToolbarTool> = listOf(
-    ToolbarTool.EMOJI, ToolbarTool.GIF, ToolbarTool.CLIPBOARD,
+    ToolbarTool.EMOJI, ToolbarTool.CLIPBOARD,
     ToolbarTool.VOICE, ToolbarTool.SETTINGS,
 )
 
 /** …and two more again on a board wide enough to hold them. */
 val LargeTabletToolbarTools: List<ToolbarTool> = listOf(
-    ToolbarTool.EMOJI, ToolbarTool.GIF, ToolbarTool.CLIPBOARD, ToolbarTool.VOICE,
+    ToolbarTool.EMOJI, ToolbarTool.CLIPBOARD, ToolbarTool.VOICE,
     ToolbarTool.TRANSLATE, ToolbarTool.TEXT_EDIT, ToolbarTool.SETTINGS,
 )
 

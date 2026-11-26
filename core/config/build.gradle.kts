@@ -100,7 +100,7 @@ android {
         // On-device AI is in every build: llama.cpp runs GGUF models and needs
         // nothing from Google. LiteRT-LM, the runtime for .litertlm and .task
         // models, is a Google artifact, so F-Droid's build offers GGUF only.
-        buildConfigField("Boolean", "ENABLE_LOCAL_LLM", "true")
+        buildConfigField("Boolean", "ENABLE_LOCAL_LLM", "false")
         buildConfigField("Boolean", "ENABLE_LITERT_LM", "$googleSdks")
         buildConfigField("Boolean", "ENABLE_WHISPER", "$googleSdks")
         // The NPU as a Compute choice for on-device AI: see npuRuntime above.

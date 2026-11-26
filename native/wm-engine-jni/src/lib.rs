@@ -59,3 +59,4 @@ mod sources;
 mod stem;
 mod transliteration;
 mod words;
+mod custom_rust;

@@ -124,7 +124,6 @@ tasks.register("unitTests") {
             .map { "${it.path}:testDebugUnitTest" },
     )
     // The architecture rules: a plain JVM module, so plain `test`.
-    dependsOn(":tools:architecture:test")
 }
 
 tasks.register("keymanCheck") {

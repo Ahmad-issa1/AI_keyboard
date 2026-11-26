@@ -4,18 +4,7 @@ name: IndexNow
 # then tell IndexNow (Bing, Yandex, Seznam, Naver) which pages changed. Pages
 # are picked by their sitemap <lastmod>, which is each page's git date.
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - 'docs/src/content/docs/**'
-      - 'docs/src/pages/**'
   workflow_dispatch:
-    inputs:
-      all:
-        description: 'Submit every URL in the sitemap'
-        type: boolean
-        default: false
 
 concurrency:
   group: indexnow

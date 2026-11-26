@@ -186,37 +186,9 @@ internal fun fileIcon(type: String, name: String = ""): ImageVector = when {
 /** A place to add from: a small accent "+" and the name, on one compact chip. */
 @Composable
 internal fun SourceChip(label: String, modifier: Modifier = Modifier, onClick: () -> Unit) {
-    val kb = LocalKbTheme.current
-    val feedback = LocalKeyPressFeedback.current
-    val shape = kb.chipShape()
-    val source = remember { MutableInteractionSource() }
-    Row(
-        modifier
-            .height(SOURCE_CHIP_HEIGHT)
-            .pressScale(source, kb.motion.any)
-            .clip(shape)
-            .frostGlass(kb, shape, FrostSurface.CHIPS)
-            .background(kb.chip)
-            .chipBorder(kb, shape)
-            .clickable(interactionSource = source, indication = null) {
-                feedback()
-                onClick()
-            }
-            .padding(horizontal = 8.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center,
-    ) {
-        Icon(Icons.Outlined.Add, contentDescription = null, tint = kb.accent, modifier = Modifier.size(14.dp))
-        Spacer(Modifier.width(3.dp))
-        Text(label, color = kb.chipText, fontSize = 11.sp, fontWeight = FontWeight.Medium, maxLines = 1, overflow = TextOverflow.Ellipsis)
-    }
+    // Disabled in custom slim build
 }
 
-/**
- * One file in the draft: a thumbnail or a glyph, its name under it, a ✕ in
- * the corner. [compact] is the thumbnail alone, as the pile stacks them,
- * with a rim in the board colour so overlapping tiles read apart.
- */
 @Composable
 internal fun FileTile(
     file: SendDraftFile,
@@ -225,59 +197,9 @@ internal fun FileTile(
     compact: Boolean = false,
     tileSize: Dp = 56.dp,
 ) {
-    val kb = LocalKbTheme.current
-    val context = LocalContext.current
-    val shape = RoundedCornerShape(10.dp)
-    Column(modifier.width(if (compact) tileSize else tileSize + 8.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-        Box(Modifier.size(tileSize)) {
-            Box(
-                Modifier
-                    .fillMaxSize()
-                    .clip(shape)
-                    .background(kb.chip.copy(alpha = kb.chip.alpha * 0.8f))
-                    .then(if (compact) Modifier.border(2.dp, kb.board, shape) else Modifier.chipBorder(kb, shape)),
-                contentAlignment = Alignment.Center,
-            ) {
-                if (file.isImage || file.isVideo) {
-                    AsyncImage(
-                        model = file.uri ?: file.file,
-                        contentDescription = file.name,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier.fillMaxSize(),
-                    )
-                } else {
-                    Icon(fileIcon(file.type, file.name), contentDescription = null, tint = kb.accent, modifier = Modifier.size(tileSize * 0.43f))
-                }
-            }
-            if (onRemove != null) {
-                Box(
-                    Modifier
-                        .align(Alignment.TopEnd)
-                        .offset(x = 4.dp, y = (-4).dp)
-                        .size(18.dp)
-                        .clip(CircleShape)
-                        .background(kb.popup)
-                        .chipBorder(kb, CircleShape)
-                        .clickable(onClick = onRemove),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Icon(Icons.Outlined.Close, contentDescription = stringResource(R.string.ime_send_remove), tint = kb.popupText, modifier = Modifier.size(11.dp))
-                }
-            }
-        }
-        if (!compact) {
-            Spacer(Modifier.height(2.dp))
-            Text(file.name, color = kb.secondaryText, fontSize = 9.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
-            if (file.size > 0) Text(bytesText(context, file.size), color = kb.secondaryText.copy(alpha = 0.7f), fontSize = 8.sp, maxLines = 1)
-        }
-    }
+    // Disabled in custom slim build
 }
 
-/**
- * The draft as a pile: the first few tiles fanned and overlapping, each
- * tilted a little more than its neighbour, popping in a beat apart; a count
- * on the last when there are more than fit. [animate] gates the pop.
- */
 @Composable
 internal fun FilePile(
     files: List<SendDraftFile>,
@@ -287,56 +209,9 @@ internal fun FilePile(
     shown: Int = PILE_SHOWN,
     onClick: (() -> Unit)? = null,
 ) {
-    val kb = LocalKbTheme.current
-    val feedback = LocalKeyPressFeedback.current
-    val visible = files.take(shown)
-    val more = files.size - visible.size
-    val overlap = tileSize * 0.36f
-    val source = remember { MutableInteractionSource() }
-    Row(
-        modifier
-            .then(if (onClick != null) Modifier.pressScale(source, animate) else Modifier)
-            .then(
-                if (onClick != null) {
-                    Modifier.clickable(interactionSource = source, indication = null) {
-                        feedback()
-                        onClick()
-                    }
-                } else {
-                    Modifier
-                },
-            )
-            .padding(horizontal = 6.dp, vertical = 4.dp),
-        horizontalArrangement = Arrangement.spacedBy(-overlap),
-        verticalAlignment = Alignment.Bottom,
-    ) {
-        visible.forEachIndexed { i, file ->
-            val tilt = (i - (visible.size - 1) / 2f) * PILE_TILT_DEG
-            Box(
-                Modifier
-                    .popIn(i, animate, key = file.id)
-                    .graphicsLayer { rotationZ = tilt },
-            ) {
-                FileTile(file, onRemove = null, compact = true, tileSize = tileSize)
-                if (more > 0 && i == visible.lastIndex) {
-                    Box(
-                        Modifier
-                            .align(Alignment.BottomEnd)
-                            .offset(x = 4.dp, y = 4.dp)
-                            .size(18.dp)
-                            .clip(CircleShape)
-                            .background(kb.accent),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        Text("+$more", color = com.wasimaster.wmkeyboard.ime.ui.maxContrastOn(kb.accent), fontSize = 8.sp, fontWeight = FontWeight.Bold)
-                    }
-                }
-            }
-        }
-    }
+    // Disabled in custom slim build
 }
 
-/** A dashed outline in the card shape: the tray's trough. */
 @Composable
 internal fun Modifier.dashedTrough(kb: KbTheme): Modifier {
     val shape = kb.cardShape()
@@ -361,21 +236,9 @@ internal fun Modifier.dashedTrough(kb: KbTheme): Modifier {
 /** A thin bar: how much of the instance's cap the draft takes; red past it. */
 @Composable
 internal fun SizeMeter(fraction: Float, over: Boolean, modifier: Modifier = Modifier) {
-    val kb = LocalKbTheme.current
-    val shown by animateFloatAsState(fraction.coerceIn(0f, 1f), if (kb.reduceMotion) tween(0) else kitSpringGentle(), label = "send-meter")
-    val color = if (over) FailedRed else kb.accent
-    Canvas(modifier.height(3.dp)) {
-        val r = size.height / 2
-        drawRoundRect(kb.divider, size = size, cornerRadius = CornerRadius(r))
-        drawRoundRect(color, size = Size(size.width * shown, size.height), cornerRadius = CornerRadius(r))
-    }
+    // Disabled in custom slim build
 }
 
-/**
- * A full ring that fills with [fraction], [content] in the middle; null
- * spins: the handshake is out and nothing has gone yet. The default content
- * is the percentage.
- */
 @Composable
 internal fun ProgressRing(
     fraction: Float?,
@@ -384,166 +247,44 @@ internal fun ProgressRing(
     stroke: Dp = 6.dp,
     content: (@Composable BoxScope.(shown: Float) -> Unit)? = null,
 ) {
-    val kb = LocalKbTheme.current
-    val shown by animateFloatAsState((fraction ?: 0f).coerceIn(0f, 1f), if (kb.reduceMotion) tween(0) else kitSpringGentle(), label = "send-ring")
-    val spin = if (fraction == null && !kb.reduceMotion) {
-        rememberInfiniteTransition(label = "send-spin")
-            .animateFloat(0f, 360f, infiniteRepeatable(tween(1_100, easing = LinearEasing), RepeatMode.Restart), label = "send-spin-angle").value
-    } else {
-        -90f
-    }
-    val track = kb.divider
-    val accent = kb.accent
-    Box(modifier.size(size), contentAlignment = Alignment.Center) {
-        Canvas(Modifier.fillMaxSize()) {
-            val w = stroke.toPx()
-            val inset = w / 2
-            val arc = Size(this.size.width - w, this.size.height - w)
-            drawArc(track, 0f, 360f, false, Offset(inset, inset), arc, style = Stroke(w, cap = StrokeCap.Round))
-            if (fraction == null) {
-                drawArc(accent, spin, 80f, false, Offset(inset, inset), arc, style = Stroke(w, cap = StrokeCap.Round))
-            } else {
-                drawArc(accent, -90f, 360f * shown, false, Offset(inset, inset), arc, style = Stroke(w, cap = StrokeCap.Round))
-            }
-        }
-        if (content != null) {
-            content(shown)
-        } else if (fraction != null) {
-            Text(
-                "${(shown * 100).toInt()}%",
-                color = kb.suggestionText,
-                fontSize = (size.value * 0.22f).sp,
-                fontWeight = FontWeight.SemiBold,
-                style = TextStyle(fontFeatureSettings = "tnum"),
-            )
-        }
-    }
+    // Disabled in custom slim build
 }
 
-/** A QR code of [text], white on white, as the generator tool draws it. */
 @Composable
 internal fun QrImage(text: String, modifier: Modifier = Modifier, sizePx: Int = 512) {
-    val bitmap = remember(text) { QrCodeGen.bitmap(text, sizePx = sizePx, ecc = "M", maxChars = QR_MAX_CHARS) }
-    if (bitmap == null) return
-    Image(
-        bitmap.asImageBitmap(),
-        contentDescription = text,
-        contentScale = ContentScale.Fit,
-        modifier = modifier
-            .aspectRatio(1f)
-            .clip(RoundedCornerShape(10.dp))
-            .background(Color.White)
-            .padding(4.dp),
-    )
+    // Disabled in custom slim build
 }
 
-/** A sweep, so "looking" looks like looking. Still under reduce-motion. */
 @Composable
 internal fun Radar(modifier: Modifier = Modifier, animate: Boolean = true) {
-    val kb = LocalKbTheme.current
-    val phase = if (animate && !kb.reduceMotion) {
-        rememberInfiniteTransition(label = "send-radar")
-            .animateFloat(0f, 1f, infiniteRepeatable(tween(1_600, easing = LinearEasing), RepeatMode.Restart), label = "send-radar-phase").value
-    } else {
-        0.6f
-    }
-    val color = kb.accent
-    Box(
-        modifier.drawBehind {
-            val r = size.minDimension / 2
-            drawCircle(color.copy(alpha = 0.9f), r * 0.22f)
-            drawCircle(color.copy(alpha = (1f - phase) * 0.8f), r * (0.3f + 0.7f * phase), style = Stroke(width = r * 0.14f))
-        },
-    )
+    // Disabled in custom slim build
 }
 
-/** A dim over the panel with [content] on it; a tap on the dim dismisses. The gallery's. */
 @Composable
 internal fun SendScrim(visible: Boolean, onDismiss: () -> Unit, content: @Composable BoxScope.() -> Unit) {
-    val kb = LocalKbTheme.current
-    AnimatedVisibility(
-        visible = visible,
-        enter = fadeIn(tween(if (kb.reduceMotion) 0 else 120)) + scaleIn(tween(if (kb.reduceMotion) 0 else 160), initialScale = 0.96f),
-        exit = fadeOut(tween(if (kb.reduceMotion) 0 else 100)) + scaleOut(tween(if (kb.reduceMotion) 0 else 100), targetScale = 0.98f),
-    ) {
-        Box(
-            Modifier
-                .fillMaxSize()
-                .background(Color.Black.copy(alpha = 0.28f))
-                .clickable(interactionSource = remember { MutableInteractionSource() }, indication = null, onClick = onDismiss),
-            content = content,
-        )
-    }
+    // Disabled in custom slim build
 }
 
-/** A card in the middle of the scrim, which takes its own taps. */
 @Composable
 internal fun SheetCard(modifier: Modifier = Modifier, content: @Composable androidx.compose.foundation.layout.ColumnScope.() -> Unit) {
-    val kb = LocalKbTheme.current
-    val shape = kb.cardShape()
-    Column(
-        modifier
-            .clip(shape)
-            .frostGlass(kb, shape, FrostSurface.POPUPS)
-            .background(kb.popup)
-            .chipBorder(kb, shape)
-            .clickable(interactionSource = remember { MutableInteractionSource() }, indication = null) {}
-            .padding(12.dp),
-        content = content,
-    )
+    // Disabled in custom slim build
 }
 
-/** A short line over the panel that slides in and fades after a moment. */
 @Composable
 internal fun SendNoticeLine(notice: SendNotice?, modifier: Modifier = Modifier) {
-    val kb = LocalKbTheme.current
-    AnimatedVisibility(
-        visible = notice != null,
-        enter = fadeIn(tween(if (kb.reduceMotion) 0 else 150)) + slideInVertically(tween(if (kb.reduceMotion) 0 else 180)) { -it },
-        exit = fadeOut(tween(if (kb.reduceMotion) 0 else 150)),
-        modifier = modifier,
-    ) {
-        var last by remember { mutableStateOf(notice) }
-        if (notice != null) last = notice
-        val n = last ?: return@AnimatedVisibility
-        Text(
-            noticeText(n),
-            color = kb.popupText,
-            fontSize = 12.sp,
-            fontWeight = FontWeight.Medium,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            modifier = Modifier
-                .padding(top = 6.dp)
-                .clip(kb.chipShape())
-                .frostGlass(kb, kb.chipShape(), FrostSurface.POPUPS)
-                .background(kb.popup)
-                .chipBorder(kb, kb.chipShape())
-                .padding(horizontal = 12.dp, vertical = 6.dp),
-        )
-    }
+    // Disabled in custom slim build
 }
 
-/** A row of text in the theme's secondary colour, for meta lines. */
 @Composable
 internal fun MetaText(text: String, modifier: Modifier = Modifier, color: Color? = null) {
-    val kb = LocalKbTheme.current
-    Text(text, color = color ?: kb.secondaryText, fontSize = 11.sp, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = modifier)
+    // Disabled in custom slim build
 }
 
-/** A small caps label with a wide tracking: TO, RECENT. */
 @Composable
 internal fun TinyLabel(text: String, modifier: Modifier = Modifier) {
-    val kb = LocalKbTheme.current
-    Text(text.uppercase(), color = kb.secondaryText, fontSize = 10.sp, fontWeight = FontWeight.SemiBold, letterSpacing = 1.sp, maxLines = 1, modifier = modifier)
+    // Disabled in custom slim build
 }
 
-/**
- * The strip's chip for a Send link that just reached the clipboard (#729):
- * the tool's icon, "Receive the file", the instance it is on, and a ✕. The
- * face opens the panel on receiving it. Drawn like the smart chips (an
- * accent fill), since it is an answer to something the user just did.
- */
 @Composable
 internal fun SendLinkOfferChip(
     offer: SendLinkOffer,
@@ -552,85 +293,12 @@ internal fun SendLinkOfferChip(
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val kb = LocalKbTheme.current
-    val feedback = LocalKeyPressFeedback.current
-    val appear = remember(offer.url) { Animatable(if (reduceMotion) 1f else 0.92f) }
-    LaunchedEffect(offer.url) {
-        if (!reduceMotion) appear.animateTo(1f, spring(dampingRatio = Spring.DampingRatioMediumBouncy))
-    }
-    val tint = kb.accent
-    val fill = tint.copy(alpha = if (kb.dark) 0.20f else 0.11f)
-    val shape = kb.chipShape()
-    val host = SendLink.parse(offer.url)?.let { hostText(it.base) }.orEmpty()
-    Row(
-        modifier = modifier
-            .fillMaxHeight()
-            .padding(vertical = 5.dp)
-            .graphicsLayer {
-                scaleX = appear.value
-                scaleY = appear.value
-                alpha = appear.value
-            }
-            .clip(shape)
-            .background(fill)
-            .chipBorder(kb, shape),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Row(
-            Modifier
-                .fillMaxHeight()
-                .clickable {
-                    feedback()
-                    onOpen()
-                }
-                .padding(start = 6.dp, end = 8.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(6.dp),
-        ) {
-            Box(
-                Modifier.size(22.dp).clip(CircleShape).background(tint.copy(alpha = 0.22f)),
-                contentAlignment = Alignment.Center,
-            ) {
-                Icon(Icons.AutoMirrored.Outlined.Send, contentDescription = null, tint = tint, modifier = Modifier.size(13.dp))
-            }
-            Text(
-                stringResource(R.string.ime_send_offer_chip),
-                color = tint,
-                fontSize = 13.sp,
-                fontWeight = FontWeight.Medium,
-                maxLines = 1,
-            )
-            if (host.isNotEmpty()) {
-                Text(
-                    stringResource(R.string.ime_send_offer_from, host),
-                    color = kb.suggestionText.copy(alpha = 0.6f),
-                    fontSize = 11.sp,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.widthIn(max = 120.dp),
-                )
-            }
-        }
-        Box(
-            Modifier
-                .fillMaxHeight()
-                .clip(CircleShape)
-                .clickable {
-                    feedback()
-                    onDismiss()
-                }
-                .padding(horizontal = 8.dp),
-            contentAlignment = Alignment.Center,
-        ) {
-            Icon(Icons.Outlined.Close, contentDescription = stringResource(R.string.ime_send_offer_dismiss), tint = tint.copy(alpha = 0.8f), modifier = Modifier.size(14.dp))
-        }
-    }
+    // Disabled in custom slim build
 }
 
-/** A small round dot: green reachable, grey unknown, red failed. */
 @Composable
 internal fun StatusDot(color: Color, modifier: Modifier = Modifier) {
-    Box(modifier.size(8.dp).clip(CircleShape).background(color))
+    // Disabled in custom slim build
 }
 
 internal fun KbTheme.dimmed(color: Color): Color = color.copy(alpha = color.alpha * 0.5f)
@@ -643,5 +311,3 @@ internal val SOURCE_CHIP_HEIGHT = 30.dp
 private const val PILE_SHOWN = 4
 
 /** Degrees between neighbours in the fan. */
-private const val PILE_TILT_DEG = 6f
-private const val QR_MAX_CHARS = 2000

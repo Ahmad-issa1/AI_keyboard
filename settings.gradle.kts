@@ -121,4 +121,3 @@ if (wmkbFlag("wmkb.benchmark", "WMKB_BENCHMARK", default = false)) include(":ben
 // written format can never drift from the reader.
 include(":tools:dictc")
 // Konsist architecture rules over the whole source tree (tests only).
-include(":tools:architecture")

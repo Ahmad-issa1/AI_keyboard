@@ -302,3 +302,6 @@
 
 # Korean spacing: libKiwiJava binds to these classes and their fields by name.
 -keep class kr.pe.bab2min.** { *; }
+
+# Keep our custom Rust JNI bridge class and native methods intact under R8
+-keep class com.wasimaster.wmkeyboard.core.engine.CustomRustNative { *; }

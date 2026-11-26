@@ -1,0 +1,126 @@
+name: Build Custom Slim Rust APK
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      build_type:
+        description: 'Build variant (release = R8 optimized APK, fast = quick test APK)'
+        required: true
+        default: 'release'
+        type: choice
+        options:
+          - release
+          - fast
+
+concurrency:
+  group: custom-apk-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  WMKB_ENABLE_PLAY_STORE: "false"
+  WMKB_ENABLE_GMS: "false"
+  WMKB_ENABLE_FDROID: "true"
+  WMKB_ENABLE_NPU: "false"
+  GRADLE_OPTS: -Dorg.gradle.jvmargs=-Xmx6g -Dorg.gradle.daemon=false
+
+jobs:
+  build-apk:
+    name: Build Rust Engine & ARM64 Slim APK
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Cache Rust build artifacts
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: |
+            native/wm-engine
+            native/wm-engine-jni
+
+      - name: Run Rust engine unit tests (including new EmojiSearch, EmojiSuggester, ClipEntities)
+        run: cargo test --release --lib --manifest-path native/wm-engine/Cargo.toml
+
+      - name: Build updated libwm_engine_jni.so for arm64-v8a
+        run: |
+          NDK_PATH="${ANDROID_NDK_LATEST_HOME:-${ANDROID_NDK_HOME:-}}"
+          if [ -z "$NDK_PATH" ] || [ ! -f "$NDK_PATH/build/cmake/android.toolchain.cmake" ]; then
+            NDK_PATH=$(find "${ANDROID_HOME:-/usr/local/lib/android/sdk}/ndk" -maxdepth 1 -mindepth 1 -type d 2>/dev/null | sort -V | tail -n 1 || true)
+          fi
+          if [ -z "$NDK_PATH" ] || [ ! -f "$NDK_PATH/build/cmake/android.toolchain.cmake" ]; then
+            echo "Installing Android NDK r27c via sdkmanager..."
+            yes | "${ANDROID_HOME:-/usr/local/lib/android/sdk}/cmdline-tools/latest/bin/sdkmanager" "ndk;27.2.12479018"
+            NDK_PATH="${ANDROID_HOME:-/usr/local/lib/android/sdk}/ndk/27.2.12479018"
+          fi
+          yes | "${ANDROID_HOME:-/usr/local/lib/android/sdk}/cmdline-tools/latest/bin/sdkmanager" --licenses >/dev/null 2>&1 || true
+          echo "Using Android NDK: $NDK_PATH"
+          ANDROID_NDK="$NDK_PATH" WMKB_ABIS="arm64-v8a" bash native/wm-engine-jni/build.sh
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Prepare signing keystore
+        env:
+          KEYSTORE_B64: ${{ secrets.CUSTOM_KEYSTORE_BASE64 }}
+          STORE_PASS: ${{ secrets.CUSTOM_STORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.CUSTOM_KEY_ALIAS }}
+          KEY_PASS: ${{ secrets.CUSTOM_KEY_PASSWORD }}
+        run: |
+          if [ -n "$KEYSTORE_B64" ]; then
+            echo "$KEYSTORE_B64" | base64 -d > "$RUNNER_TEMP/custom-release.jks"
+            echo "RELEASE_STORE_FILE=$RUNNER_TEMP/custom-release.jks" >> "$GITHUB_ENV"
+            echo "RELEASE_STORE_PASSWORD=$STORE_PASS" >> "$GITHUB_ENV"
+            echo "RELEASE_KEY_ALIAS=$KEY_ALIAS" >> "$GITHUB_ENV"
+            echo "RELEASE_KEY_PASSWORD=$KEY_PASS" >> "$GITHUB_ENV"
+          else
+            keytool -genkeypair -v \
+              -keystore "$RUNNER_TEMP/custom-release.jks" \
+              -storetype PKCS12 \
+              -keyalg RSA -keysize 2048 -validity 10000 \
+              -alias wmcustom \
+              -storepass wmcustom123 -keypass wmcustom123 \
+              -dname "CN=WMKeyboard Custom, OU=Dev, O=Custom, L=Local, S=Local, C=US"
+            echo "RELEASE_STORE_FILE=$RUNNER_TEMP/custom-release.jks" >> "$GITHUB_ENV"
+            echo "RELEASE_STORE_PASSWORD=wmcustom123" >> "$GITHUB_ENV"
+            echo "RELEASE_KEY_ALIAS=wmcustom" >> "$GITHUB_ENV"
+            echo "RELEASE_KEY_PASSWORD=wmcustom123" >> "$GITHUB_ENV"
+          fi
+
+      - name: Build ARM64 Slim APK
+        run: |
+          MODE="${{ github.event.inputs.build_type || 'release' }}"
+          if [ "$MODE" = "fast" ]; then
+            ./gradlew :app:assembleIntlFast \
+              -Pwmkb.enableFdroid=true \
+              -Pwmkb.enableNpu=false \
+              -Pwmkb.abi=arm64-v8a \
+              --stacktrace
+          else
+            ./gradlew :app:assembleIntlRelease \
+              -Pwmkb.enableFdroid=true \
+              -Pwmkb.enableNpu=false \
+              -Pwmkb.abi=arm64-v8a \
+              --stacktrace
+          fi
+
+      - name: Collect APK artifact
+        run: |
+          mkdir -p out-apk
+          find app/build/outputs/apk/intl -name "*.apk" -exec cp {} out-apk/ \;
+          ls -lh out-apk/
+
+      - name: Upload installable APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: wmkeyboard-slim-rust-arm64-apk
+          path: out-apk/*.apk
+          retention-days: 14

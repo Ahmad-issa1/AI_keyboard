@@ -1,6 +1,9 @@
 {
   "$comment": "Every on-demand native gate, in one place. Read by build-logic (FeatureModules, the Play splits, settings includes, dynamicFeatures, native pins, proguard keeps, the core modules' jniLibs) and by native/gates.py for the shell side (collect-natives.sh, release.yml, build-fdroid-libs.sh). How to add a gate: docs/src/content/docs/development/architecture.md, 'Adding a native gate'.",
-  "abis": ["arm64-v8a", "armeabi-v7a"],
+  "abis": [
+    "arm64-v8a",
+    "armeabi-v7a"
+  ],
   "base": [
     {
       "name": "libwm_engine_jni.so",
@@ -16,7 +19,9 @@
       "name": "libwmwebp.so",
       "dir": "core/content/src/main/jniLibs",
       "fdroidBuild": "native/webp-jni/build.sh",
-      "keep": ["com.wasimaster.wmkeyboard.core.media.WebpAnimNative"]
+      "keep": [
+        "com.wasimaster.wmkeyboard.core.media.WebpAnimNative"
+      ]
     }
   ],
   "gates": [
@@ -24,17 +29,22 @@
       "id": "llm",
       "play": "module",
       "google": true,
-      "maven": [
-        { "name": "liblitertlm_jni.so", "module": "com.google.ai.edge.litertlm:litertlm-android" }
-      ]
+      "maven": [],
+      "libraries": []
     },
     {
       "id": "translate",
       "play": "module",
       "google": true,
       "maven": [
-        { "name": "libtranslate_jni.so", "module": "com.google.mlkit:translate" },
-        { "name": "liblanguage_id_l2c_jni.so", "module": "com.google.mlkit:language-id" }
+        {
+          "name": "libtranslate_jni.so",
+          "module": "com.google.mlkit:translate"
+        },
+        {
+          "name": "liblanguage_id_l2c_jni.so",
+          "module": "com.google.mlkit:language-id"
+        }
       ]
     },
     {
@@ -44,8 +54,14 @@
       "play": "module",
       "google": true,
       "maven": [
-        { "name": "libLiteRt.so", "module": "com.google.ai.edge.litert:litert" },
-        { "name": "liblitert_jni.so", "module": "com.google.ai.edge.litert:litert-api" }
+        {
+          "name": "libLiteRt.so",
+          "module": "com.google.ai.edge.litert:litert"
+        },
+        {
+          "name": "liblitert_jni.so",
+          "module": "com.google.ai.edge.litert:litert-api"
+        }
       ]
     },
     {
@@ -55,7 +71,10 @@
       "play": "module",
       "google": true,
       "maven": [
-        { "name": "libdigitalink.so", "module": "com.google.mlkit:digital-ink-recognition" }
+        {
+          "name": "libdigitalink.so",
+          "module": "com.google.mlkit:digital-ink-recognition"
+        }
       ]
     },
     {
@@ -64,13 +83,54 @@
       "doc": "`:feature:speech`: the whisper.cpp and Whistle native libraries behind the GGML Whisper models and Whistle (`:core:voice`), with whisper.cpp's OpenCL build for Adreno GPUs on arm64 (Compute on the Offline Whisper screen). Only the libraries move; their Kotlin stays in the base.",
       "play": "split",
       "libraries": [
-        { "name": "libwmwhispercpp.so", "dir": "core/voice/src/main/jniLibs", "fdroidBuild": "native/whispercpp-jni/build.sh" },
-        { "name": "libwmwhispercpp_v82.so", "dir": "core/voice/src/main/jniLibs", "fdroidBuild": "native/whispercpp-jni/build.sh", "abis": ["arm64-v8a"] },
-        { "name": "libwmwhispercpp_i8mm.so", "dir": "core/voice/src/main/jniLibs", "fdroidBuild": "native/whispercpp-jni/build.sh", "abis": ["arm64-v8a"] },
-        { "name": "libwmwhispercpp_opencl.so", "dir": "core/voice/src/main/jniLibs", "fdroidBuild": "native/whispercpp-jni/build.sh", "abis": ["arm64-v8a"] },
-        { "name": "libwmwhistle.so", "dir": "core/voice/src/whistle/jniLibs", "abis": ["arm64-v8a"],
-          "fdroidPin": { "gate": "whistle", "arm64-v8a": { "sha256": "60a5166cb70fc2253cc839a44edac1dbce493ef1d84b6c52076cbebd9c8a9f7a", "size": 622240 } } },
-        { "name": "libwmdenoise.so", "dir": "core/voice/src/main/jniLibs", "fdroidBuild": "native/rnnoise-jni/build.sh" }
+        {
+          "name": "libwmwhispercpp.so",
+          "dir": "core/voice/src/main/jniLibs",
+          "fdroidBuild": "native/whispercpp-jni/build.sh"
+        },
+        {
+          "name": "libwmwhispercpp_v82.so",
+          "dir": "core/voice/src/main/jniLibs",
+          "fdroidBuild": "native/whispercpp-jni/build.sh",
+          "abis": [
+            "arm64-v8a"
+          ]
+        },
+        {
+          "name": "libwmwhispercpp_i8mm.so",
+          "dir": "core/voice/src/main/jniLibs",
+          "fdroidBuild": "native/whispercpp-jni/build.sh",
+          "abis": [
+            "arm64-v8a"
+          ]
+        },
+        {
+          "name": "libwmwhispercpp_opencl.so",
+          "dir": "core/voice/src/main/jniLibs",
+          "fdroidBuild": "native/whispercpp-jni/build.sh",
+          "abis": [
+            "arm64-v8a"
+          ]
+        },
+        {
+          "name": "libwmwhistle.so",
+          "dir": "core/voice/src/whistle/jniLibs",
+          "abis": [
+            "arm64-v8a"
+          ],
+          "fdroidPin": {
+            "gate": "whistle",
+            "arm64-v8a": {
+              "sha256": "60a5166cb70fc2253cc839a44edac1dbce493ef1d84b6c52076cbebd9c8a9f7a",
+              "size": 622240
+            }
+          }
+        },
+        {
+          "name": "libwmdenoise.so",
+          "dir": "core/voice/src/main/jniLibs",
+          "fdroidBuild": "native/rnnoise-jni/build.sh"
+        }
       ]
     },
     {
@@ -79,7 +139,14 @@
       "doc": "`:feature:whispervulkan`: whisper.cpp's Vulkan build for the phone GPUs Qualcomm's OpenCL backend refuses (Mali, Xclipse, PowerVR; `:core:voice`), loaded by `WhisperCppGpu` beside a CPU build when Compute on the Offline Whisper screen asks for the GPU on such a phone. Its own gate because its compiled shaders make it many times the size of the CPU builds.",
       "play": "split",
       "libraries": [
-        { "name": "libwmwhispercpp_vulkan.so", "dir": "core/voice/src/whispervulkan/jniLibs", "fdroidBuild": "native/whispercpp-jni/build.sh", "abis": ["arm64-v8a"] }
+        {
+          "name": "libwmwhispercpp_vulkan.so",
+          "dir": "core/voice/src/whispervulkan/jniLibs",
+          "fdroidBuild": "native/whispercpp-jni/build.sh",
+          "abis": [
+            "arm64-v8a"
+          ]
+        }
       ]
     },
     {
@@ -88,7 +155,14 @@
       "doc": "`:feature:opus`: libopus and the Ogg writer that compress dictation audio before it is uploaded to a transcription server (`OpusEncoder`, `:core:voice`). Its own gate, not the speech one: server dictation is the only user, and it should not have to fetch the on-device engines' libraries to get 300 KB of encoder. Until it is here the clip goes as WAV.",
       "play": "split",
       "libraries": [
-        { "name": "libwmopus.so", "dir": "core/voice/src/opus/jniLibs", "fdroidBuild": "native/opus-jni/build.sh", "keep": ["com.wasimaster.wmkeyboard.core.voice.OpusEncoder"] }
+        {
+          "name": "libwmopus.so",
+          "dir": "core/voice/src/opus/jniLibs",
+          "fdroidBuild": "native/opus-jni/build.sh",
+          "keep": [
+            "com.wasimaster.wmkeyboard.core.voice.OpusEncoder"
+          ]
+        }
       ]
     },
     {
@@ -97,7 +171,11 @@
       "doc": "`:feature:executorch`: the app's ExecuTorch runtime (`libwmexecutorch`), shared by Asr4All, Parakeet and Moonshine dictation and the FUTO Swipe glide engine (`:core:voice`). Its own gate so that turning on the glide engine does not also fetch whisper.cpp and Whistle.",
       "play": "split",
       "libraries": [
-        { "name": "libwmexecutorch.so", "dir": "core/voice/src/executorch/jniLibs", "fdroidBuild": "native/executorch-jni/build.sh" }
+        {
+          "name": "libwmexecutorch.so",
+          "dir": "core/voice/src/executorch/jniLibs",
+          "fdroidBuild": "native/executorch-jni/build.sh"
+        }
       ]
     },
     {
@@ -106,7 +184,13 @@
       "doc": "`:feature:executorchqnn`: ExecuTorch with Qualcomm's QNN delegate beside XNNPACK (`libwmexecutorch_qnn`, arm64, `:core:voice`), loaded instead of `libwmexecutorch` on a Snapdragon with an NPU once fetched, so a program exported for that NPU runs its delegated parts there through the `npu` gate's QNN libraries. Compiled against Qualcomm's QNN headers, so never F-Droid's.",
       "play": "split",
       "libraries": [
-        { "name": "libwmexecutorch_qnn.so", "dir": "core/voice/src/executorchqnn/jniLibs", "abis": ["arm64-v8a"] }
+        {
+          "name": "libwmexecutorch_qnn.so",
+          "dir": "core/voice/src/executorchqnn/jniLibs",
+          "abis": [
+            "arm64-v8a"
+          ]
+        }
       ]
     },
     {
@@ -115,7 +199,14 @@
       "doc": "`:feature:executorchvulkan`: ExecuTorch with its Vulkan GPU delegate beside XNNPACK (`libwmexecutorch_vulkan`, arm64, `:core:voice`), loaded instead of `libwmexecutorch` on a phone with Vulkan 1.1 once fetched, so a program exported with the Vulkan partitioner runs its delegated parts on the GPU. Its shaders are compiled in with native/vulkan.sh's glslc.",
       "play": "split",
       "libraries": [
-        { "name": "libwmexecutorch_vulkan.so", "dir": "core/voice/src/executorchvulkan/jniLibs", "fdroidBuild": "native/executorch-jni/build.sh", "abis": ["arm64-v8a"] }
+        {
+          "name": "libwmexecutorch_vulkan.so",
+          "dir": "core/voice/src/executorchvulkan/jniLibs",
+          "fdroidBuild": "native/executorch-jni/build.sh",
+          "abis": [
+            "arm64-v8a"
+          ]
+        }
       ]
     },
     {
@@ -124,7 +215,13 @@
       "doc": "`:feature:executorchneuron`: ExecuTorch with MediaTek's NeuroPilot delegate beside XNNPACK (`libwmexecutorch_neuron`, arm64, `:core:voice`), loaded instead of `libwmexecutorch` on a Dimensity 9300 or 9400 once fetched, so a program exported for that NPU runs its delegated parts there through the phone's own NeuroPilot adapter. Compiled against MediaTek's NeuronAdapter.h, so never F-Droid's.",
       "play": "split",
       "libraries": [
-        { "name": "libwmexecutorch_neuron.so", "dir": "core/voice/src/executorchneuron/jniLibs", "abis": ["arm64-v8a"] }
+        {
+          "name": "libwmexecutorch_neuron.so",
+          "dir": "core/voice/src/executorchneuron/jniLibs",
+          "abis": [
+            "arm64-v8a"
+          ]
+        }
       ]
     },
     {
@@ -133,8 +230,11 @@
       "doc": "`:feature:onnx`: Microsoft's ONNX Runtime and the sherpa-onnx bridge built on it (`libwmsherpa`), behind the Sherpa voice engine (`:core:voice`). Outside Play the runtime is read straight out of Microsoft's AAR on Maven Central, never mirrored. Other ONNX models can ride the same runtime later; only sherpa-onnx's bridge is specific.",
       "play": "split",
       "libraries": [
-        { "name": "libwmsherpa.so", "dir": "core/voice/src/onnx/jniLibs", "fdroidBuild": "native/sherpa-onnx-jni/build.sh" },
-        { "name": "libwmxlit.so", "dir": "core/voice/src/onnx/jniLibs", "fdroidBuild": "native/indicxlit-jni/build.sh" },
+        {
+          "name": "libwmsherpa.so",
+          "dir": "core/voice/src/onnx/jniLibs",
+          "fdroidBuild": "native/sherpa-onnx-jni/build.sh"
+        },
         {
           "name": "libwmnikud.so",
           "dir": "core/voice/src/onnx/jniLibs",
@@ -142,7 +242,11 @@
         }
       ],
       "maven": [
-        { "name": "libonnxruntime.so", "module": "com.microsoft.onnxruntime:onnxruntime-android", "catalog": "onnxruntime-android" }
+        {
+          "name": "libonnxruntime.so",
+          "module": "com.microsoft.onnxruntime:onnxruntime-android",
+          "catalog": "onnxruntime-android"
+        }
       ]
     },
     {
@@ -151,7 +255,16 @@
       "doc": "`:feature:sherpaqnn`: sherpa-onnx built a second time with its QNN recognizers (`libwmsherpa_qnn`, arm64, `:core:voice`), which run k2-fsa's ready-made QNN context binaries of Parakeet and Moonshine models on a Snapdragon NPU through the `npu` gate's QNN libraries. Loaded beside the `onnx` gate's ONNX Runtime, which it names as a dependency, once an NPU build of either engine is used. Compiled against Qualcomm's QNN headers, so never F-Droid's.",
       "play": "split",
       "libraries": [
-        { "name": "libwmsherpa_qnn.so", "dir": "core/voice/src/sherpaqnn/jniLibs", "abis": ["arm64-v8a"], "keep": ["com.wasimaster.wmkeyboard.core.voice.sherpa.SherpaQnnNative"] }
+        {
+          "name": "libwmsherpa_qnn.so",
+          "dir": "core/voice/src/sherpaqnn/jniLibs",
+          "abis": [
+            "arm64-v8a"
+          ],
+          "keep": [
+            "com.wasimaster.wmkeyboard.core.voice.sherpa.SherpaQnnNative"
+          ]
+        }
       ]
     },
     {
@@ -161,10 +274,20 @@
       "play": "split",
       "google": true,
       "libraries": [
-        { "name": "libwmvosk.so", "dir": "core/voice/src/vosk/jniLibs", "keep": ["com.wasimaster.wmkeyboard.core.voice.vosk.VoskNative"] }
+        {
+          "name": "libwmvosk.so",
+          "dir": "core/voice/src/vosk/jniLibs",
+          "keep": [
+            "com.wasimaster.wmkeyboard.core.voice.vosk.VoskNative"
+          ]
+        }
       ],
       "maven": [
-        { "name": "libvosk.so", "module": "com.alphacephei:vosk-android", "catalog": "vosk-android" }
+        {
+          "name": "libvosk.so",
+          "module": "com.alphacephei:vosk-android",
+          "catalog": "vosk-android"
+        }
       ]
     },
     {
@@ -173,9 +296,7 @@
       "doc": "`:feature:kiwi`: the Kiwi morphological analyser behind Korean spacing correction (`:core:input`), upstream's prebuilt library, about 18 MB. Upstream builds no 32-bit ARM library, so armeabi-v7a holds an empty stand-in that bundletool's same-ABI rule asks for and KoreanSpacing never loads. Not built here from source, so not in F-Droid's build.",
       "play": "split",
       "google": true,
-      "libraries": [
-        { "name": "libKiwiJava.so", "dir": "core/input/src/kiwi/jniLibs" }
-      ]
+      "libraries": []
     },
     {
       "id": "webrtc",
@@ -183,9 +304,8 @@
       "doc": "`:feature:webrtc`: the WebRTC library behind PairDrop in Send files (`:feature:ime`), about 12 MB per ABI and off until PairDrop is switched on. Its Java API stays in the base; only the library moves. A prebuilt binary, so not in F-Droid's build.",
       "play": "split",
       "google": true,
-      "maven": [
-        { "name": "libjingle_peerconnection_so.so", "module": "io.github.webrtc-sdk:android", "catalog": "webrtc-android" }
-      ]
+      "maven": [],
+      "libraries": []
     },
     {
       "id": "grammar",
@@ -193,7 +313,14 @@
       "doc": "`:feature:grammar`: the Harper grammar library (`:core:intelligence`).",
       "play": "split",
       "libraries": [
-        { "name": "libharper_jni.so", "dir": "core/intelligence/src/main/jniLibs", "fdroidBuild": "native/harper-jni/build.sh", "keep": ["com.wasimaster.wmkeyboard.core.grammar.HarperNative"] }
+        {
+          "name": "libharper_jni.so",
+          "dir": "core/intelligence/src/main/jniLibs",
+          "fdroidBuild": "native/harper-jni/build.sh",
+          "keep": [
+            "com.wasimaster.wmkeyboard.core.grammar.HarperNative"
+          ]
+        }
       ]
     },
     {
@@ -201,9 +328,7 @@
       "property": "plugins",
       "doc": "`:feature:plugins`: the Python interpreter that runs plugins and the plugin editor's language tooling (`libwm_python_jni`, `native/wm-python-jni`, `:core:plugins`). Fetched when the user turns plugins on or opens the plugin editor; until then nothing about plugins runs.",
       "play": "split",
-      "libraries": [
-        { "name": "libwm_python_jni.so", "dir": "core/plugins/src/plugins/jniLibs", "fdroidBuild": "native/wm-python-jni/build.sh", "keep": ["com.wasimaster.wmkeyboard.core.plugins.PythonNative"] }
-      ]
+      "libraries": []
     },
     {
       "id": "divvungrammar",
@@ -211,7 +336,14 @@
       "doc": "`:feature:divvungrammar`: divvun-runtime, which runs GiellaLT's grammar checker bundles (Sámi languages, Faroese) for the grammar tool (`:core:intelligence`). GPL-3.0, unlike the rest of the app: its VISL CG-3 port is. Fetched the first time a grammar bundle is downloaded.",
       "play": "split",
       "libraries": [
-        { "name": "libwmdivvungrammar.so", "dir": "core/intelligence/src/divvungrammar/jniLibs", "fdroidBuild": "native/divvungrammar-jni/build.sh", "keep": ["com.wasimaster.wmkeyboard.core.grammar.DivvunGrammarNative"] }
+        {
+          "name": "libwmdivvungrammar.so",
+          "dir": "core/intelligence/src/divvungrammar/jniLibs",
+          "fdroidBuild": "native/divvungrammar-jni/build.sh",
+          "keep": [
+            "com.wasimaster.wmkeyboard.core.grammar.DivvunGrammarNative"
+          ]
+        }
       ]
     },
     {
@@ -220,9 +352,30 @@
       "doc": "`:feature:spell`: the Hunspell library behind spell checking against an imported `.aff` and `.dic` (`:core:prediction`).",
       "play": "split",
       "libraries": [
-        { "name": "libwmhunspell.so", "dir": "core/prediction/src/main/jniLibs", "fdroidBuild": "native/hunspell-jni/build.sh", "keep": ["com.wasimaster.wmkeyboard.core.prediction.HunspellNative"] },
-        { "name": "libwmdivvun.so", "dir": "core/prediction/src/main/jniLibs", "fdroidBuild": "native/divvunspell-jni/build.sh", "keep": ["com.wasimaster.wmkeyboard.core.prediction.DivvunNative"] },
-        { "name": "libwmvoikko.so", "dir": "native/voikko-jni/jniLibs", "fdroidBuild": "native/voikko-jni/build.sh", "keep": ["com.wasimaster.wmkeyboard.core.prediction.VoikkoNative"] }
+        {
+          "name": "libwmhunspell.so",
+          "dir": "core/prediction/src/main/jniLibs",
+          "fdroidBuild": "native/hunspell-jni/build.sh",
+          "keep": [
+            "com.wasimaster.wmkeyboard.core.prediction.HunspellNative"
+          ]
+        },
+        {
+          "name": "libwmdivvun.so",
+          "dir": "core/prediction/src/main/jniLibs",
+          "fdroidBuild": "native/divvunspell-jni/build.sh",
+          "keep": [
+            "com.wasimaster.wmkeyboard.core.prediction.DivvunNative"
+          ]
+        },
+        {
+          "name": "libwmvoikko.so",
+          "dir": "native/voikko-jni/jniLibs",
+          "fdroidBuild": "native/voikko-jni/build.sh",
+          "keep": [
+            "com.wasimaster.wmkeyboard.core.prediction.VoikkoNative"
+          ]
+        }
       ]
     },
     {
@@ -231,7 +384,10 @@
       "doc": "`:feature:ocr`: the Tesseract library behind the scanner's offline reads (`:core:intelligence`).",
       "play": "split",
       "libraries": [
-        { "name": "libwmtess.so", "dir": "core/intelligence/src/tesseract/jniLibs" }
+        {
+          "name": "libwmtess.so",
+          "dir": "core/intelligence/src/tesseract/jniLibs"
+        }
       ]
     },
     {
@@ -239,27 +395,21 @@
       "property": "rime",
       "doc": "`:feature:rime`: librime, behind the optional RIME engine for Chinese (`:core:input`). The built-in composers need nothing from it.",
       "play": "split",
-      "libraries": [
-        { "name": "libwmrime.so", "dir": "core/input/src/main/jniLibs", "fdroidBuild": "native/librime-jni/build.sh", "keep": ["com.wasimaster.wmkeyboard.core.input.rime.RimeNative"] }
-      ]
+      "libraries": []
     },
     {
       "id": "mozc",
       "property": "mozc",
       "doc": "`:feature:mozc`: Google's Mozc converter, behind the optional Mozc engine for Japanese (`:core:input`). Its dictionary is a separate download; the built-in Japanese composer needs neither.",
       "play": "split",
-      "libraries": [
-        { "name": "libwmmozc.so", "dir": "core/input/src/mozc/jniLibs", "fdroidBuild": "native/mozc-jni/build.sh", "keep": ["com.wasimaster.wmkeyboard.core.input.mozc.MozcNative"] }
-      ]
+      "libraries": []
     },
     {
       "id": "chewing",
       "property": "chewing",
       "doc": "`:feature:chewing`: libchewing (`libwmchewing`, `native/chewing-jni`, `:core:input`), behind the optional Chewing engine for Zhuyin, which converts whole phrases the way Taiwan's Chewing (新酷音) does. LGPL-2.1-or-later, so its own library and its own gate, replaceable on its own. Its dictionary is a separate download; the built-in Zhuyin composer needs neither.",
       "play": "split",
-      "libraries": [
-        { "name": "libwmchewing.so", "dir": "core/input/src/chewing/jniLibs", "fdroidBuild": "native/chewing-jni/build.sh", "keep": ["com.wasimaster.wmkeyboard.core.input.chewing.ChewingNative"] }
-      ]
+      "libraries": []
     },
     {
       "id": "langid",
@@ -267,8 +417,22 @@
       "doc": "`:feature:langid`: language identification on builds without ML Kit's identifier (F-Droid, offline): fastText's lid.176 (`libwmfasttext`, model compiled in) first and CLD3 (`libwmcld3`) when it is unsure, both `:core:intelligence`. Reads the source language for the translate tool's Bergamot and NLLB engines and the sticker prompt. Fetched the first time it is asked.",
       "play": "split",
       "libraries": [
-        { "name": "libwmcld3.so", "dir": "core/intelligence/src/langid/jniLibs", "fdroidBuild": "native/cld3-jni/build.sh", "keep": ["com.wasimaster.wmkeyboard.core.translate.Cld3Native"] },
-        { "name": "libwmfasttext.so", "dir": "core/intelligence/src/langid/jniLibs", "fdroidBuild": "native/fasttext-jni/build.sh", "keep": ["com.wasimaster.wmkeyboard.core.translate.FastTextNative"] }
+        {
+          "name": "libwmcld3.so",
+          "dir": "core/intelligence/src/langid/jniLibs",
+          "fdroidBuild": "native/cld3-jni/build.sh",
+          "keep": [
+            "com.wasimaster.wmkeyboard.core.translate.Cld3Native"
+          ]
+        },
+        {
+          "name": "libwmfasttext.so",
+          "dir": "core/intelligence/src/langid/jniLibs",
+          "fdroidBuild": "native/fasttext-jni/build.sh",
+          "keep": [
+            "com.wasimaster.wmkeyboard.core.translate.FastTextNative"
+          ]
+        }
       ]
     },
     {
@@ -277,7 +441,14 @@
       "doc": "`:feature:bergamot`: Mozilla's Bergamot translator behind the translate tool's free on-device engine (`:core:intelligence`). Only the library moves; the models are downloaded per language direction.",
       "play": "split",
       "libraries": [
-        { "name": "libwmbergamot.so", "dir": "core/intelligence/src/bergamot/jniLibs", "fdroidBuild": "native/bergamot-jni/build.sh", "keep": ["com.wasimaster.wmkeyboard.core.translate.BergamotNative"] }
+        {
+          "name": "libwmbergamot.so",
+          "dir": "core/intelligence/src/bergamot/jniLibs",
+          "fdroidBuild": "native/bergamot-jni/build.sh",
+          "keep": [
+            "com.wasimaster.wmkeyboard.core.translate.BergamotNative"
+          ]
+        }
       ]
     },
     {
@@ -286,7 +457,14 @@
       "doc": "`:feature:ct2`: CTranslate2, the runtime of the translate tool's NLLB engine (`:core:intelligence`). Only the library moves; the model is a separate 630 MB download.",
       "play": "split",
       "libraries": [
-        { "name": "libwmct2.so", "dir": "core/intelligence/src/ct2/jniLibs", "fdroidBuild": "native/ctranslate2-jni/build.sh", "keep": ["com.wasimaster.wmkeyboard.core.translate.Ct2Native"] }
+        {
+          "name": "libwmct2.so",
+          "dir": "core/intelligence/src/ct2/jniLibs",
+          "fdroidBuild": "native/ctranslate2-jni/build.sh",
+          "keep": [
+            "com.wasimaster.wmkeyboard.core.translate.Ct2Native"
+          ]
+        }
       ]
     },
     {
@@ -294,61 +472,42 @@
       "property": "zinnia",
       "doc": "`:feature:zinnia`: zinnia, the offline recogniser behind Chinese and Japanese handwriting where ML Kit's is not in the build or not picked (`:core:intelligence`). Its models are separate downloads.",
       "play": "split",
-      "libraries": [
-        { "name": "libwmzinnia.so", "dir": "core/intelligence/src/zinnia/jniLibs", "fdroidBuild": "native/zinnia-jni/build.sh", "keep": ["com.wasimaster.wmkeyboard.core.handwriting.ZinniaNative"] }
-      ]
+      "libraries": []
     },
     {
       "id": "lipi",
       "property": "lipi",
       "doc": "`:feature:lipi`: vidyut-lipi, the transliterator between the Brahmic scripts and IAST, ISO 15919, ITRANS and the other romanisations (`libwmlipi`, `native/lipi-jni`, `:core:language`), behind the Convert script selection action and Sanskrit's Write in another script. About 860 KB, so its own gate rather than part of `wm_engine`, which loads at every keyboard start.",
       "play": "split",
-      "libraries": [
-        { "name": "libwmlipi.so", "dir": "core/language/src/lipi/jniLibs", "fdroidBuild": "native/lipi-jni/build.sh", "keep": ["com.wasimaster.wmkeyboard.core.transliteration.LipiNative"] }
-      ]
+      "libraries": []
     },
     {
       "id": "llama",
       "property": "llama",
       "doc": "`:feature:llama`: llama.cpp, the on-device AI runtime for GGUF models (`:core:intelligence`), with libmtmd for vision models' projectors; the OpenCL build for Adreno GPUs is the `llamagpu` gate. LiteRT-LM, the default runtime, has its own gate (`LlmModule`); only a GGUF model asks for this one.",
       "play": "split",
-      "libraries": [
-        { "name": "libwmllama.so", "dir": "core/intelligence/src/llama/jniLibs", "fdroidBuild": "native/llamacpp-jni/build.sh", "keep": ["com.wasimaster.wmkeyboard.core.localllm.LlamaNative"] },
-        { "name": "libwmllama_v82.so", "dir": "core/intelligence/src/llama/jniLibs", "fdroidBuild": "native/llamacpp-jni/build.sh", "abis": ["arm64-v8a"] },
-        { "name": "libwmllama_i8mm.so", "dir": "core/intelligence/src/llama/jniLibs", "fdroidBuild": "native/llamacpp-jni/build.sh", "abis": ["arm64-v8a"] }
-      ]
+      "libraries": []
     },
     {
       "id": "llamagpu",
       "property": "llamaGpu",
       "doc": "`:feature:llamagpu`: llama.cpp's OpenCL build for Adreno GPUs (`:core:intelligence`), a third arm64 libwmllama that a process loads instead of a CPU one when Compute is GPU on an Adreno phone. Its own gate so that nobody else downloads it; asked for by `LlamaCpp` and the Compute chips.",
       "play": "split",
-      "libraries": [
-        { "name": "libwmllama_opencl.so", "dir": "core/intelligence/src/llamagpu/jniLibs", "fdroidBuild": "native/llamacpp-jni/build.sh", "abis": ["arm64-v8a"] }
-      ]
+      "libraries": []
     },
     {
       "id": "llamavulkan",
       "property": "llamaVulkan",
       "doc": "`:feature:llamavulkan`: llama.cpp's Vulkan build for the phone GPUs Qualcomm's OpenCL backend refuses (Mali, Xclipse, PowerVR; `:core:intelligence`), an arm64 libwmllama that a process loads instead of a CPU one when Compute is GPU on such a phone. Its own gate because its compiled shaders make it several times the size of the CPU builds; asked for by `LlamaCpp` and the Compute chips.",
       "play": "split",
-      "libraries": [
-        { "name": "libwmllama_vulkan.so", "dir": "core/intelligence/src/llamavulkan/jniLibs", "fdroidBuild": "native/llamacpp-jni/build.sh", "abis": ["arm64-v8a"] }
-      ]
+      "libraries": []
     },
     {
       "id": "llamanpu",
       "property": "llamaNpu",
       "doc": "`:feature:llamanpu`: llama.cpp with ggml's Hexagon backend for the Snapdragon NPU (`libwmllama_hexagon`, arm64, `:core:intelligence`), loaded instead of a CPU build when Compute is NPU on a Snapdragon 8 Gen 2 or later, with the DSP half of the backend, one skel per Hexagon generation (`libggml-htp-v73.so` to `v85`), which `LlamaHexagon` points the DSP at. Built in Qualcomm's toolchain container by .github/workflows/llama-hexagon.yml, so never F-Droid's.",
       "play": "split",
-      "libraries": [
-        { "name": "libwmllama_hexagon.so", "dir": "core/intelligence/src/llamanpu/jniLibs", "abis": ["arm64-v8a"] },
-        { "name": "libggml-htp-v73.so", "dir": "core/intelligence/src/llamanpu/jniLibs", "abis": ["arm64-v8a"] },
-        { "name": "libggml-htp-v75.so", "dir": "core/intelligence/src/llamanpu/jniLibs", "abis": ["arm64-v8a"] },
-        { "name": "libggml-htp-v79.so", "dir": "core/intelligence/src/llamanpu/jniLibs", "abis": ["arm64-v8a"] },
-        { "name": "libggml-htp-v81.so", "dir": "core/intelligence/src/llamanpu/jniLibs", "abis": ["arm64-v8a"] },
-        { "name": "libggml-htp-v85.so", "dir": "core/intelligence/src/llamanpu/jniLibs", "abis": ["arm64-v8a"] }
-      ]
+      "libraries": []
     },
     {
       "id": "docscan",
@@ -356,7 +515,14 @@
       "doc": "`:feature:docscan`: the built-in document scanner's library (OpenCV's core and imgproc, `:core:intelligence`), behind the scanner tool where Google's scanner is missing or switched off.",
       "play": "split",
       "libraries": [
-        { "name": "libwmdocscan.so", "dir": "core/intelligence/src/docscan/jniLibs", "fdroidBuild": "native/docscan-jni/build.sh", "keep": ["com.wasimaster.wmkeyboard.core.docscan.DocScanNative"] }
+        {
+          "name": "libwmdocscan.so",
+          "dir": "core/intelligence/src/docscan/jniLibs",
+          "fdroidBuild": "native/docscan-jni/build.sh",
+          "keep": [
+            "com.wasimaster.wmkeyboard.core.docscan.DocScanNative"
+          ]
+        }
       ]
     },
     {
@@ -365,7 +531,14 @@
       "doc": "`:feature:zxing`: zxing-cpp's readers, behind the QR scanner where ML Kit's barcode reader is missing or not picked (`:core:intelligence`).",
       "play": "split",
       "libraries": [
-        { "name": "libwmzxing.so", "dir": "core/intelligence/src/zxing/jniLibs", "fdroidBuild": "native/zxingcpp-jni/build.sh", "keep": ["com.wasimaster.wmkeyboard.core.barcode.ZxingNative"] }
+        {
+          "name": "libwmzxing.so",
+          "dir": "core/intelligence/src/zxing/jniLibs",
+          "fdroidBuild": "native/zxingcpp-jni/build.sh",
+          "keep": [
+            "com.wasimaster.wmkeyboard.core.barcode.ZxingNative"
+          ]
+        }
       ]
     },
     {
@@ -374,7 +547,14 @@
       "doc": "`:feature:skottie`: Skia's Skottie Lottie player (`libwmskottie`, `native/skottie-jni`, `:core:content`), CPU raster only, with HarfBuzz shaping, FreeType and the PNG, JPEG and WebP decoders. Draws imported sticker templates whose text layers use Skottie's own auto-fit extensions (resize to fit, minimum and maximum size, maximum lines, vertical alignment) exactly as they were made. Lottie (airbnb) stays the default renderer; only such a template asks for this gate.",
       "play": "split",
       "libraries": [
-        { "name": "libwmskottie.so", "dir": "core/content/src/skottie/jniLibs", "fdroidBuild": "native/skottie-jni/build.sh", "keep": ["com.wasimaster.wmkeyboard.core.media.skottie.SkottieNative"] }
+        {
+          "name": "libwmskottie.so",
+          "dir": "core/content/src/skottie/jniLibs",
+          "fdroidBuild": "native/skottie-jni/build.sh",
+          "keep": [
+            "com.wasimaster.wmkeyboard.core.media.skottie.SkottieNative"
+          ]
+        }
       ]
     },
     {
@@ -383,7 +563,14 @@
       "doc": "`:feature:numbat`: Numbat, the calculator language behind sums with units, constants and dates in the calculator tool and the calculator chip (`libwmnumbat`, `native/numbat-jni`, `:core:tools`). About 2 MB, so its own gate rather than part of `wm_engine`; plain arithmetic never needs it, since `CalcEngine` answers that first. Asked for the first time a sum with units is typed on the strip or in the calculator.",
       "play": "split",
       "libraries": [
-        { "name": "libwmnumbat.so", "dir": "core/tools/src/numbat/jniLibs", "fdroidBuild": "native/numbat-jni/build.sh", "keep": ["com.wasimaster.wmkeyboard.core.tools.NumbatNative"] }
+        {
+          "name": "libwmnumbat.so",
+          "dir": "core/tools/src/numbat/jniLibs",
+          "fdroidBuild": "native/numbat-jni/build.sh",
+          "keep": [
+            "com.wasimaster.wmkeyboard.core.tools.NumbatNative"
+          ]
+        }
       ]
     },
     {
@@ -391,10 +578,7 @@
       "property": "imagegen",
       "doc": "`:feature:imagegen`: the sticker generator's runtimes (`:core:intelligence`): MNN on the CPU (`libwmimagegen`, also the scanner's PaddleOCR runtime in builds without LiteRT, F-Droid's, the handwriting panel's PaddleOCR reader wherever ML Kit has no model, and the upscaler's in every build) and, arm64 only, the runner that drives Qualcomm AI Hub's Stable Diffusion on the NPU through the Qualcomm runtime (`libwmimagegen_qnn`, never built for F-Droid: it is compiled against Qualcomm's QNN headers). Only the libraries move; the models are separate downloads.",
       "play": "split",
-      "libraries": [
-        { "name": "libwmimagegen.so", "dir": "core/intelligence/src/imagegen/jniLibs", "fdroidBuild": "native/imagegen-jni/build.sh", "keep": ["com.wasimaster.wmkeyboard.core.imagegen.ImageGenNative"] },
-        { "name": "libwmimagegen_qnn.so", "dir": "core/intelligence/src/imagegennpu/jniLibs", "abis": ["arm64-v8a"], "keep": ["com.wasimaster.wmkeyboard.core.imagegen.QnnImageNative"] }
-      ]
+      "libraries": []
     },
     {
       "id": "npu",
@@ -402,23 +586,15 @@
       "doc": "`:feature:npu`: the NPU runtime behind Compute = NPU for on-device AI: LiteRT's Qualcomm dispatch library and the QNN libraries for a Snapdragon, LiteRT's MediaTek or Google Tensor dispatch library alone for a Dimensity or a Tensor (those drive the phone's own drivers). Assets only, unpacked into app storage by `NpuRuntime` in :core:intelligence.",
       "play": "module",
       "google": true,
-      "enabledBy": { "flag": "wmkb.enableNpu", "env": "WMKB_ENABLE_NPU", "default": true, "buildConfig": "ENABLE_NPU" },
+      "enabledBy": {
+        "flag": "wmkb.enableNpu",
+        "env": "WMKB_ENABLE_NPU",
+        "default": true,
+        "buildConfig": "ENABLE_NPU"
+      },
       "neverPackaged": true,
-      "maven": [
-        { "name": "libLiteRtDispatch_Qualcomm.so", "module": "com.google.ai.edge.litert:litert-npu-runtime-qualcomm", "catalog": "litert-npu-runtime-qualcomm", "licence": "qualcomm" },
-        { "name": "libQnnSystem.so", "module": "com.qualcomm.qti:qnn-runtime", "catalog": "qnn-runtime", "licence": "qualcomm" },
-        { "name": "libQnnHtp.so", "module": "com.qualcomm.qti:qnn-runtime", "catalog": "qnn-runtime", "licence": "qualcomm" },
-        { "name": "libQnnHtpV73Stub.so", "gate": "npu-V73", "module": "com.qualcomm.qti:qnn-runtime", "catalog": "qnn-runtime", "licence": "qualcomm" },
-        { "name": "libQnnHtpV73Skel.so", "gate": "npu-V73", "module": "com.qualcomm.qti:qnn-runtime", "catalog": "qnn-runtime", "licence": "qualcomm" },
-        { "name": "libQnnHtpV75Stub.so", "gate": "npu-V75", "module": "com.qualcomm.qti:qnn-runtime", "catalog": "qnn-runtime", "licence": "qualcomm" },
-        { "name": "libQnnHtpV75Skel.so", "gate": "npu-V75", "module": "com.qualcomm.qti:qnn-runtime", "catalog": "qnn-runtime", "licence": "qualcomm" },
-        { "name": "libQnnHtpV79Stub.so", "gate": "npu-V79", "module": "com.qualcomm.qti:qnn-runtime", "catalog": "qnn-runtime", "licence": "qualcomm" },
-        { "name": "libQnnHtpV79Skel.so", "gate": "npu-V79", "module": "com.qualcomm.qti:qnn-runtime", "catalog": "qnn-runtime", "licence": "qualcomm" },
-        { "name": "libQnnHtpV81Stub.so", "gate": "npu-V81", "module": "com.qualcomm.qti:qnn-runtime", "catalog": "qnn-runtime", "licence": "qualcomm" },
-        { "name": "libQnnHtpV81Skel.so", "gate": "npu-V81", "module": "com.qualcomm.qti:qnn-runtime", "catalog": "qnn-runtime", "licence": "qualcomm" },
-        { "name": "libLiteRtDispatch_MediaTek.so", "gate": "npu-mediatek", "module": "com.google.ai.edge.litert:litert-npu-runtime-mediatek", "catalog": "litert-npu-runtime-mediatek" },
-        { "name": "libLiteRtDispatch_GoogleTensor.so", "gate": "npu-tensor", "module": "com.google.ai.edge.litert:litert-npu-runtime-google-tensor", "catalog": "litert-npu-runtime-google-tensor" }
-      ]
+      "maven": [],
+      "libraries": []
     },
     {
       "id": "googlehome",
@@ -429,7 +605,8 @@
       "enabledBy": {
         "buildConfig": "ENABLE_GOOGLE_HOME",
         "requiresDir": "feature/ime/libs/googlehome/m2/com/google/android/gms/play-services-home"
-      }
+      },
+      "libraries": []
     },
     {
       "id": "scanner",
@@ -437,8 +614,14 @@
       "doc": "ML Kit's bundled text recogniser and barcode reader behind the scanner tool. Never a Play module: Play builds use the play-services twins, whose models come from Play services. Only [NativeDelivery] backs it, on a build that leaves the two libraries out of the APK.",
       "google": true,
       "maven": [
-        { "name": "libmlkit_google_ocr_pipeline.so", "module": "com.google.mlkit:text-recognition-bundled-common" },
-        { "name": "libbarhopper_v3.so", "module": "com.google.mlkit:barcode-scanning" }
+        {
+          "name": "libmlkit_google_ocr_pipeline.so",
+          "module": "com.google.mlkit:text-recognition-bundled-common"
+        },
+        {
+          "name": "libbarhopper_v3.so",
+          "module": "com.google.mlkit:barcode-scanning"
+        }
       ]
     }
   ]
