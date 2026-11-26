@@ -75,13 +75,13 @@ android {
 // apart from src/main/jniLibs because they ride their own gate, `onnx`: on
 // Play the on-demand :feature:onnx split packages both instead, so this
 // module carries neither there.
-if (!playStoreChannel) apply(plugin = "wmkeyboard.onnxruntime")
+// Removed in Phase 6: onnx/sherpa disabled
 
 // Offline Vosk's libraries (#1165): libwmvosk (native/vosk-jni) from
 // src/vosk/jniLibs, and Alpha Cephei's libvosk.so out of their AAR. The `vosk`
 // gate's: :feature:vosk carries both on Play. A prebuilt binary, so F-Droid's
 // build has neither.
-if (!playStoreChannel && googleSdks) apply(plugin = "wmkeyboard.vosk")
+// Removed in Phase 6: vosk disabled
 
 androidComponents {
     onVariants { variant ->

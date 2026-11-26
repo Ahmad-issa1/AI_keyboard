@@ -43,30 +43,6 @@ internal fun PluginKeyPickerDialog(
     onDismiss: () -> Unit,
     onPick: (InstalledPlugin) -> Unit,
 ) {
-    val options = rememberKeyPlugins()
-    val rail = rememberScrollRailState()
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text(stringResource(R.string.layout_editor_plugin_picker_title)) },
-        text = {
-            ScrollRail(state = rail, modifier = Modifier.heightIn(max = 380.dp)) {
-                if (options.isEmpty()) {
-                    Text(stringResource(R.string.layout_editor_plugin_picker_empty))
-                }
-                for (option in options) {
-                    WmRow(
-                        title = option.displayName,
-                        subtitle = option.displayDescription.takeIf { it.isNotBlank() },
-                        leading = {
-                            RadioButton(selected = option.id == current, onClick = { onPick(option) })
-                        },
-                        onClick = { onPick(option) },
-                    )
-                }
-            }
-        },
-        confirmButton = {
-            TextButton(onClick = onDismiss) { Text(stringResource(CommonR.string.common_close)) }
-        },
-    )
+    // Disabled in custom slim build
 }
+
